@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Campus Hub | Notes</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9fafc; margin: 0; padding: 0; }
+    .container { width: 80%; margin: 50px auto; background: #fff; padding: 20px; border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #333; }
+    form { margin: 20px 0; text-align: center; }
+    input[type="file"] { margin-right: 10px; }
+    button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    ul { list-style-type: none; padding: 0; margin-top: 20px; }
+    li { margin: 10px 0; padding: 10px; background: #f1f3f6; border-radius: 5px; }
+    a { text-decoration: none; color: #007bff; }
+    .back { display: block; margin-top: 20px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📚 Notes / Resources</h2>
+    <form action="upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required>
+      <button type="submit">Upload</button>
+    </form>
+    <h3>Available Files:</h3>
+    <ul id="fileList"></ul>
+    <a href="dashboard_student" class="back">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    fetch('listFiles')
+      .then(res => res.json())
+      .then(files => {
+        const list = document.getElementById('fileList');
+        files.forEach(file => {
+          let li = document.createElement('li');
+          li.innerHTML = `<a href="uploads/${file}" download>${file}</a>`;
+          list.appendChild(li);
+        });
+      })
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Campus Hub | Profile</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; }
+    .container { width: 400px; margin: 50px auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; margin-bottom: 20px; }
+    p { font-size: 16px; margin: 10px 0; }
+    input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+    button { width: 100%; padding: 10px; background: #ff9800; border: none; color: white; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #e68900; }
+    a { display: block; text-align: center; margin-top: 20px; color: #333; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>👤 My Profile</h2>
+    <p><strong>Name:</strong> <span id="userName"></span></p>
+    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+    <h3>Change Password</h3>
+    <form action="changePassword" method="post">
+      <input type="password" name="newPassword" placeholder="New Password" required>
+      <button type="submit">Update Password</button>
+    </form>
+
+    <a href="dashboard_student">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    fetch('profile')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('userName').textContent = data.name;
+        document.getElementById('userEmail').textContent = data.email;
+      })
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>

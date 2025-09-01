@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Campus Hub</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fb; margin: 0; }
+    header {
+      background: #4CAF50; color: white;
+      padding: 15px; text-align: center;
+      font-size: 22px; font-weight: bold;
+    }
+    .container {
+      max-width: 900px; margin: 30px auto;
+      background: #fff; padding: 25px;
+      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 { color: #333; margin-top: 25px; }
+    #welcomeMsg { font-size: 18px; color: #444; margin-bottom: 20px; }
+    form {
+      padding: 20px; background: #f9f9f9; border-radius: 8px;
+      border: 2px dashed #ccc; margin-bottom: 20px;
+    }
+    button {
+      background: #4CAF50; color: white; border: none;
+      padding: 10px 18px; border-radius: 6px; cursor: pointer;
+      font-size: 15px; font-weight: bold;
+    }
+    button:hover { background: #45a049; }
+    ul { list-style: none; padding: 0; }
+    ul li {
+      background: #f3f7ff; margin: 8px 0; padding: 10px;
+      border-radius: 6px; font-weight: 500;
+    }
+    ul li a { text-decoration: none; color: #2c3e50; }
+    .logout {
+      display: inline-block; margin-top: 20px; background: #e74c3c;
+      padding: 10px 15px; color: white; border-radius: 6px;
+      text-decoration: none; font-weight: bold;
+    }
+    .logout:hover { background: #c0392b; }
+  </style>
+</head>
+<body>
+  <header>📚 Campus Hub - Admin Dashboard</header>
+
+  <div class="container">
+    <p id="welcomeMsg">Loading profile...</p>
+
+    <h2>📤 Upload Notes</h2>
+    <form enctype="multipart/form-data" method="post" action="upload">
+      <input type="file" name="file" required>
+      <button type="submit">Upload</button>
+    </form>
+
+    <h2>📂 All Notes</h2>
+    <ul id="fileList"></ul>
+
+    <a href="logout" class="logout">🚪 Logout</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load profile
+      fetch('profile')
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          document.getElementById('welcomeMsg').textContent =
+            'Welcome, ' + (data.name || 'Admin') + ' (Admin)';
+        })
+        .catch(err => {
+          console.error('Profile fetch error:', err);
+          document.getElementById('welcomeMsg').textContent = 'Welcome, Admin';
+        });
+
+      // Load files
+      function loadFiles() {
+        fetch('files')
+          .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            return res.json();
+          })
+          .then(data => {
+            const list = document.getElementById('fileList');
+            list.innerHTML = '';
+            if (!Array.isArray(data) || data.length === 0) {
+              list.innerHTML = '<li>No notes uploaded yet.</li>';
+              return;
+            }
+            data.forEach(file => {
+              const li = document.createElement('li');
+              // encode filename for safe URL
+              const href = 'uploads/' + encodeURIComponent(file);
+              li.innerHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer">${file}</a>`;
+              list.appendChild(li);
+            });
+          })
+          .catch(err => {
+            console.error('Files fetch error:', err);
+            document.getElementById('fileList').innerHTML = '<li>Could not load files.</li>';
+          });
+      }
+
+      loadFiles();
+    });
+  </script>
+</body>
+</html>
